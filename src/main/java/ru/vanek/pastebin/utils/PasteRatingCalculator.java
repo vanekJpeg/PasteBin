@@ -7,9 +7,6 @@ import ru.vanek.pastebin.models.User;
 import java.util.List;
 import java.util.stream.Collectors;
 @Component
-public class PasteRatingCalculator {
-    public double calculateRate(Paste paste) {
-
-        return (paste.getRate()+paste.getViews()+paste.getAuthor().getRate())*0.1;
-    }
+public interface PasteRatingCalculator {
+    public double calculateRate(Paste paste) ;
 }

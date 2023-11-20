@@ -1,8 +1,9 @@
 package ru.vanek.pastebin.config;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,11 +22,16 @@ import ru.vanek.pastebin.services.UserService;
 
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
     private final UserService userService;
     private final JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    public SecurityConfig(@Lazy UserService userService, JwtRequestFilter jwtRequestFilter) {
+        this.userService = userService;
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         return   http
@@ -35,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/pastes/create").authenticated()
                         .requestMatchers(HttpMethod.PATCH,"/pastes/{id}").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"/pastes/{id}").authenticated()
-                        .requestMatchers(HttpMethod.GET,"/users/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/users/create").authenticated()
                         .requestMatchers(HttpMethod.PATCH,"/users/{id}").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"/users/{id}").authenticated()
                         .anyRequest().permitAll()

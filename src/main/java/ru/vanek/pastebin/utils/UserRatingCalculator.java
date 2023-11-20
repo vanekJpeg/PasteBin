@@ -9,10 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class UserRatingCalculator {
-    public double calculateRate(User user) {
-        List<Double> pasteRates = user.getPastes().stream().map(Paste::getRate).collect(Collectors.toList());
-        return user.getRate()+(pasteRates.stream().reduce(1.0, Double::sum)*0.01);
-    }
+public interface UserRatingCalculator {
+    public double calculateRate(User user);
 }
-//pasteRates.stream().reduce(1.0,(a, b) -> a*b)

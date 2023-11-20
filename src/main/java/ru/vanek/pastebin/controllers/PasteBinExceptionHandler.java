@@ -5,10 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.vanek.pastebin.exceptions.AuthException;
-import ru.vanek.pastebin.exceptions.ExceptionResponse;
-import ru.vanek.pastebin.exceptions.PasteNotFoundException;
-import ru.vanek.pastebin.exceptions.UserNotFoundException;
+import ru.vanek.pastebin.exceptions.*;
 
 @RestControllerAdvice
 public class PasteBinExceptionHandler {
@@ -22,11 +19,15 @@ public class PasteBinExceptionHandler {
         return new ResponseEntity<>(new ExceptionResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage()),HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler
-    public ResponseEntity<ExceptionResponse> handleAuthException(UserNotFoundException e){
+    public ResponseEntity<ExceptionResponse> handleUserNotFoundException(UserNotFoundException e){
         return new ResponseEntity<>(new ExceptionResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage()),HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler
-    public ResponseEntity<ExceptionResponse> handleAuthException(PasteNotFoundException e){
+    public ResponseEntity<ExceptionResponse> handlePasteNotFoundException(PasteNotFoundException e){
+        return new ResponseEntity<>(new ExceptionResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage()),HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler
+    public ResponseEntity<ExceptionResponse> handleWrongIdException(WrongIdException e){
         return new ResponseEntity<>(new ExceptionResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage()),HttpStatus.BAD_REQUEST);
     }
 }

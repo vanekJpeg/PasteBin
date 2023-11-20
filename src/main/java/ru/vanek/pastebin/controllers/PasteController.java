@@ -5,74 +5,41 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vanek.pastebin.dto.PasteDTO;
-import ru.vanek.pastebin.exceptions.NotEnoughRulesException;
-import ru.vanek.pastebin.models.Paste;
-import ru.vanek.pastebin.models.User;
 import ru.vanek.pastebin.services.PasteService;
-import ru.vanek.pastebin.services.UserService;
 
 import java.security.Principal;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/pastes")
 public class PasteController {
     private final PasteService pasteService;
-    private final UserService userService;
     @Autowired
-    public PasteController(PasteService pasteService, UserService userService) {
+    public PasteController(PasteService pasteService) {
         this.pasteService = pasteService;
-        this.userService = userService;
     }
     @GetMapping()
     public List<PasteDTO> getPastes(@RequestParam(value = "page",required = false, defaultValue = "0" ) int page) {
-
-        return pasteService.findAll(page).stream().map(this::convertPasteToDto).collect(Collectors.toList());
+        return pasteService.findAll(page);
     }
     @GetMapping("/{id}")
     public PasteDTO show(@PathVariable("id") int id) {
-        return convertPasteToDto(pasteService.findOne(id));
+        return pasteService.findOne(id);
     }
     @PostMapping("/create")
     public ResponseEntity<HttpStatus> create(@RequestBody PasteDTO pasteDTO, Principal principal) {
-        Paste paste = convertToPaste(pasteDTO,principal);
-        paste.setViews(0);
-        paste.setExpirationAt(pasteDTO.getExpirationAt());
-        paste.setCreatedAt(new Date());
-        pasteService.save(paste);
+        pasteService.save(pasteDTO,principal.getName());
         return ResponseEntity.ok(HttpStatus.OK);
     }
     @PatchMapping("/{id}")
-    public PasteDTO edit(Principal principal, @PathVariable("id") int id, @RequestBody PasteDTO pasteDTO) {
-        if(isEnoughRules(id,principal.getName())){
-            Paste paste = convertToPaste(pasteDTO,principal);
-            pasteService.update(id,paste);
-            return pasteDTO;
-        } else throw new NotEnoughRulesException("У вас недостаточно прав для редактирования поста");
-
+    public ResponseEntity<HttpStatus> edit(Principal principal, @PathVariable("id") int id, @RequestBody PasteDTO pasteDTO) {
+       pasteService.update(id,pasteDTO,principal.getName());
+        return ResponseEntity.ok(HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") int id, Principal principal) {
-        if(isEnoughRules(id,principal.getName())){
-            pasteService.delete(id);
-            return ResponseEntity.ok(HttpStatus.OK);
-        } else throw new NotEnoughRulesException("У вас недостаточно прав для удаления поста");
+        pasteService.delete(id,principal.getName());
+        return ResponseEntity.ok(HttpStatus.OK);
     }
-    public boolean isEnoughRules(int postId, String username){
-        return userService.findByUsername(username) == pasteService.findOne(postId).getAuthor();
-    }
-    public PasteDTO convertPasteToDto(Paste paste){
-        return new PasteDTO(paste.getName(),paste.getText(),paste.getExpirationAt());
-    }
-    public Paste convertToPaste(PasteDTO pasteDTO,Principal principal){
-        User author=userService.findByUsername(principal.getName());
-        Paste paste = new Paste();
-        paste.setName(pasteDTO.getName());
-        paste.setText(pasteDTO.getText());
-        paste.setAuthor(author);
-        paste.setRate(author.getRate());
-        return paste;
-    }
+
+
 }
