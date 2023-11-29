@@ -15,18 +15,18 @@ public class UserConverterImpl implements UserConverter {
         this.passwordEncoder = passwordEncoder;
     }
     public UserResponse convertUserToResponse(User user){
-        return new UserResponse(user.getUsername(),user.getEmail());
+        return new UserResponse(user.getUsername(),user.getEmail(),user.getId());
     }
     public User convertToUser(UserRequest userRequest){
         User user = new User();
         user.setUsername(userRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));;
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setEmail(userRequest.getEmail());
         return user;
     }
     public User convertToUser(UserRequest userRequest, User user){
         user.setUsername(userRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));;
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setEmail(userRequest.getEmail());
         return user;
     }

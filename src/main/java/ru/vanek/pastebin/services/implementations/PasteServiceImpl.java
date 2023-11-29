@@ -3,6 +3,7 @@ package ru.vanek.pastebin.services.implementations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,10 +79,11 @@ public class PasteServiceImpl implements PasteService {
     public void deleteExpiredPastes(){
         pasteRepository.deleteAllByExpirationAtBefore(new Date());
     }
-    public List<Paste> getPastesByAuthorId(int id) {
+    public List<PasteDTO> getPastesByAuthor(String author) {
         Optional<List<Paste>> pastes;
-        if((pastes =pasteRepository.findAllByAuthorId(id)).isPresent()){
-            return pastes.get();
+        User user= userRepository.findByUsername(author).orElseThrow(()->new UserNotFoundException("Данного автора не существует"));
+        if((pastes =pasteRepository.findAllByAuthorId(user.getId())).isPresent()){
+            return pastes.get().stream().map(pasteConverter::convertPasteToDto).collect(Collectors.toList());
         }
         else return Collections.emptyList() ;
     }

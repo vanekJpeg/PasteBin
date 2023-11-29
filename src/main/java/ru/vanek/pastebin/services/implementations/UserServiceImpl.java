@@ -30,7 +30,8 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final UserConverter userConverter;
     public List<UserResponse> findAll(int page) {
-        return userRepository.findAll(PageRequest.of(page,10, Sort.by("rate"))).getContent().stream().map(userConverter::convertUserToResponse).collect(Collectors.toList());
+        return userRepository.findAll(PageRequest.of(page,10, Sort.by("rate"))).getContent()
+                .stream().map(userConverter::convertUserToResponse).collect(Collectors.toList());
     }
     public UserResponse findOne(int id) {
         return userConverter.convertUserToResponse(userRepository.findById(id).orElseThrow(()->new AuthException("Данный пользователь не найден")));

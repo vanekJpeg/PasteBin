@@ -28,24 +28,3 @@ CREATE TABLE users_roles (
                              foreign key (user_id) references users (id),
                              foreign key (role_id) references roles (id)
 );
-insert into roles (name)
-values
-    ('ROLE_USER'), ('ROLE_ADMIN');
-insert into users  (name   ,
-                    login  ,
-                    password ,
-                    email ,
-                    rate ) values ('vanek', 'vanek','vanek','vanek',1);
-
-
-insert into pastes  (
-    name ,
-    rate,views,
-    text,
-    user_id
-) values ('vanek', 1,0,'testTeext',1);
-
-insert into users (username, password, email)
-values
-    ('user', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i', 'user@gmail.com'),
-    ('admin', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i', 'admin@gmail.com');

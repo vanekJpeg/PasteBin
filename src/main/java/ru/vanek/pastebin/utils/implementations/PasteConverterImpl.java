@@ -9,7 +9,7 @@ import ru.vanek.pastebin.utils.PasteConverter;
 @Component
 public class PasteConverterImpl implements PasteConverter {
     public PasteDTO convertPasteToDto(Paste paste){
-        return new PasteDTO(paste.getName(),paste.getText(),paste.getExpirationAt());
+        return new PasteDTO(paste.getName(),paste.getText(),paste.getExpirationAt(), paste.getId());
     }
     public Paste convertToPaste(PasteDTO pasteDTO){
         Paste paste = new Paste();

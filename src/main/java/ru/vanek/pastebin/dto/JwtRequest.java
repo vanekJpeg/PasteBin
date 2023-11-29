@@ -1,11 +1,13 @@
 package ru.vanek.pastebin.dto;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
 public class JwtRequest {
+    @NotEmpty
     private String username;
+    @NotEmpty
     private String password;
 
     public JwtRequest(String username, String password) {

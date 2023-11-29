@@ -38,10 +38,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET,"/pastes/create").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/pastes/create").authenticated()
                         .requestMatchers(HttpMethod.PATCH,"/pastes/{id}").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"/pastes/{id}").authenticated()
-                        .requestMatchers(HttpMethod.GET,"/users/create").authenticated()
                         .requestMatchers(HttpMethod.PATCH,"/users/{id}").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"/users/{id}").authenticated()
                         .anyRequest().permitAll()
